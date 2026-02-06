@@ -1,0 +1,113 @@
+#:kivy 2.0.0
+
+<StockItem>:
+    orientation: 'vertical'
+    padding: 10
+    spacing: 5
+    canvas.before:
+        Color:
+            rgba: 0.1, 0.1, 0.1, 0.1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    Label:
+        text: root.stock_code
+        font_size: 18
+        bold: True
+    Label:
+        text: root.company_name
+        font_size: 14
+    Label:
+        text: root.price
+        font_size: 16
+    Label:
+        text: root.change
+        font_size: 14
+        color: (1, 0, 0, 1) if '+' in root.change else (0, 1, 0, 1)
+
+<LoginScreen>:
+    name: 'login'
+
+<RegisterScreen>:
+    name: 'register'
+
+<MainScreen>:
+    name: 'main'
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 10
+        spacing: 10
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: None
+            height: 50
+            Label:
+                text: f'欢迎，{root.username}'
+                font_size: 16
+                bold: True
+            Button:
+                text: '持仓'
+                size_hint_x: 0.3
+                on_press: root.go_to_holdings()
+            Button:
+                text: '退出'
+                size_hint_x: 0.3
+                on_press: root.logout()
+        Label:
+            text: f'账户余额: ¥{root.balance}'
+            font_size: 18
+            color: (0, 0.5, 0, 1)
+        Button:
+            text: '刷新股票列表'
+            size_hint_y: None
+            height: 50
+            on_press: root.load_stocks()
+        BoxLayout:
+            orientation: 'horizontal'
+            spacing: 10
+            Button:
+                text: '买入'
+                on_press: root.buy_stock()
+            Button:
+                text: '卖出'
+                on_press: root.sell_stock()
+            Button:
+                text: 'K线'
+                on_press: root.show_kline()
+        RecycleView:
+            id: stock_list
+            viewclass: 'StockItem'
+            data: [{'stock_code': stock['stock_code'], 'company_name': stock['company_name'], 'price': stock['price'], 'change': stock['change']} for stock in root.stocks]
+            SelectableRecycleBoxLayout:
+                default_size: None, dp(100)
+                default_size_hint: 1, None
+                size_hint_y: None
+                height: self.minimum_height
+                orientation: 'vertical'
+
+<HoldingsScreen>:
+    name: 'holdings'
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 10
+        spacing: 10
+        Button:
+            text: '返回'
+            size_hint_y: None
+            height: 50
+            on_press: root.manager.current = 'main'
+        Label:
+            text: '我的持仓'
+            font_size: 20
+            bold: True
+        RecycleView:
+            id: holdings_list
+            viewclass: 'Label'
+            data: [{'text': f'{holding["stock_code"]} - {holding["company_name"]}\n数量: {holding["quantity"]}\n价值: ¥{holding["value"]:.2f}'} for holding in root.holdings]
+            RecycleBoxLayout:
+                default_size: None, dp(80)
+                default_size_hint: 1, None
+                size_hint_y: None
+                height: self.minimum_height
+                orientation: 'vertical'
+                spacing: 10
