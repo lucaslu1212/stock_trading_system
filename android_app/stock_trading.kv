@@ -111,3 +111,47 @@
                 height: self.minimum_height
                 orientation: 'vertical'
                 spacing: 10
+
+<SettingsScreen>:
+    name: 'settings'
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 10
+        spacing: 10
+        Label:
+            text: '服务器设置'
+            font_size: 20
+            bold: True
+        BoxLayout:
+            orientation: 'horizontal'
+            spacing: 10
+            Label:
+                text: '服务器地址:'
+                size_hint_x: 0.3
+            TextInput:
+                id: address_input
+                text: '127.0.0.1'
+                size_hint_x: 0.7
+        BoxLayout:
+            orientation: 'horizontal'
+            spacing: 10
+            Label:
+                text: '端口:'
+                size_hint_x: 0.3
+            TextInput:
+                id: port_input
+                text: '10024'
+                size_hint_x: 0.7
+        BoxLayout:
+            orientation: 'horizontal'
+            spacing: 10
+            Button:
+                text: '保存'
+                on_press: root.save_settings(self)
+            Button:
+                text: '返回'
+                on_press: root.go_back(self)
+        Label:
+            id: message_label
+            text: ''
+            color: 0, 1, 0, 1

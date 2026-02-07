@@ -6,7 +6,7 @@ import time
 import random
 
 class StockTradingServer:
-    def __init__(self, host='0.0.0.0', port=6494):
+    def __init__(self, host='0.0.0.0', port=10024):
         self.host = host
         self.port = port
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -14,6 +14,7 @@ class StockTradingServer:
         self.stocks = {}
         self.orders = []
         self.connections = []
+        self.admin_password = 'admin123'  # 后台管理密码
         self.setup_database()
         self.load_stocks()
         
@@ -136,10 +137,19 @@ class StockTradingServer:
         elif action == 'sell':
             return self.sell_stock(request)
         elif action == 'add_stock':
+            # 验证管理员密码
+            if request.get('admin_password') != self.admin_password:
+                return {'success': False, 'message': '管理员密码错误'}
             return self.add_stock(request)
         elif action == 'delete_stock':
+            # 验证管理员密码
+            if request.get('admin_password') != self.admin_password:
+                return {'success': False, 'message': '管理员密码错误'}
             return self.delete_stock(request)
         elif action == 'get_users':
+            # 验证管理员密码
+            if request.get('admin_password') != self.admin_password:
+                return {'success': False, 'message': '管理员密码错误'}
             return self.get_users()
         else:
             return {'error': 'Unknown action'}

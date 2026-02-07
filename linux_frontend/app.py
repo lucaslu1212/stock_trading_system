@@ -8,7 +8,7 @@ app = Flask(__name__)
 def send_request_to_server(request_data):
     try:
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        client_socket.connect(('localhost', 6494))
+        client_socket.connect(('localhost', 10024))
         client_socket.send(json.dumps(request_data).encode('utf-8'))
         response = client_socket.recv(1024).decode('utf-8')
         client_socket.close()
@@ -36,7 +36,8 @@ def add_stock():
         'action': 'add_stock',
         'stock_code': stock_code,
         'company_name': company_name,
-        'price': price
+        'price': price,
+        'admin_password': 'admin123'
     })
     
     return jsonify(response)
@@ -47,14 +48,18 @@ def delete_stock():
     
     response = send_request_to_server({
         'action': 'delete_stock',
-        'stock_code': stock_code
+        'stock_code': stock_code,
+        'admin_password': 'admin123'
     })
     
     return jsonify(response)
 
 @app.route('/users')
 def users():
-    response = send_request_to_server({'action': 'get_users'})
+    response = send_request_to_server({
+        'action': 'get_users',
+        'admin_password': 'admin123'
+    })
     users = response.get('users', [])
     return render_template('users.html', users=users)
 
